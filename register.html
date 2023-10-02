@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>SB Admin 2 - Register</title>
+
+    <!-- Custom fonts for this template-->
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link
+        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+        rel="stylesheet">
+
+    <!-- Custom styles for this template-->
+    <!-- <link rel="stylesheet" href="css/sb-admin-2.css"> -->
+  
+    <link href="css/sb-admin-2.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/register.css">
+    
+
+    <script>
+        function validateForm() {
+        var password = document.forms["registrationForm"]["password"].value;
+        var confirmPassword = document.forms["registrationForm"]["cpassword"].value;
+  
+        if (confirmPassword == "") {
+          alert("Confirm Password must be filled out");
+          return false;
+        }
+  
+        if (password != confirmPassword) {
+          alert("Passwords do not match");
+          return false;
+        }
+  
+        return true;
+  
+  }
+    </script>
+</head>
+
+
+<body class="bg-gradient-primary" style="background-color: #37517e;">
+
+    <div class="container">
+
+        <div class="card o-hidden border-0 shadow-lg my-5 register">
+            <div class="card-body p-0">
+                <!-- Nested Row within Card Body -->
+                <div class="row">
+                    <div class=" col-lg-5  d-none d-lg-block register-image"></div>
+                    <div class="col-lg-7">
+                        <div class="p-5">
+                            <div class="text-center">
+                                <h1 class="h4 text-gray-900 mb-4">Create an Account!</h1>
+                            </div>
+                            <form action="php/register.php" method="post" name="registrationForm" class="user" onsubmit="return validateForm()">
+                                <div class="form-group row">
+                                    <div class="col-sm-6 mb-3 mb-sm-0">
+                                        <input type="text" class="form-control form-control-user" name="firstname"
+                                            id="FirstName" placeholder="First Name" required>
+                                    </div> 
+                                    <div class="col-sm-6 mb-3 mb-sm-0">
+                                        <input type="text" class="form-control form-control-user" name="lastname"
+                                            id="exampleFirstName" placeholder="Last Name" required>
+                                    </div>
+                                    <div class="col-sm-6 mt-3">
+                                        <input type="number" class="form-control form-control-user" id="LastName"
+                                            name="age" placeholder="Age" required>
+                                    </div>
+
+                                    <div class="col-sm-6 mt-3">
+                                        <input type="text" class="form-control form-control-user" id="NickName"
+                                            name="nickname" placeholder="Nick Name" required>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <input type="email" class="form-control form-control-user" id="Email"
+                                      name="email"  placeholder="Email Address" required>
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" class="form-control form-control-user" id="Address"
+                                        name="address" placeholder="Address" required>
+                                </div>
+                              
+                                <div class="radio-group">
+                                    <p>Gender:</p>
+                                    <input type="radio" id="Male" name="gender" value="Male" required>
+                                    <label for="Male">Male</label>
+                                    <input type="radio" id="Female" name="gender" value="Female" required>
+                                    <label for="Female">Female</label>
+                                    <input type="radio" id="Other" name="gender" value="Other" required>
+                                    <label for="Other">Other</label>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-sm-6 mb-3 mb-sm-0">
+                                        <input type="password" class="form-control form-control-user" name="password"
+                                            id="password" placeholder="Password">
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <input type="password" class="form-control form-control-user" name="cpassword"
+                                            id="cpassword" placeholder="Repeat Password">
+                                    </div>
+                                    <input type="hidden" name="role" value="User">
+                                    <input type="hidden" name="status" value="Active">
+                                </div>
+                                
+                                    <input class="btn btn-primary  mb-2 btn-user  btn-block" type="submit" class="custom-input" value="Register Account">
+<!--                             
+                                <hr>
+                                <a href="index.html" class="btn btn-google btn-user btn-block">
+                                    <i class="fab fa-google fa-fw"></i> Register with Google
+                                </a>
+                                <a href="index.html" class="btn btn-facebook btn-user btn-block">
+                                    <i class="fab fa-facebook-f fa-fw"></i> Register with Facebook
+                                </a> -->
+                            </form>
+                      
+                           
+                            <div class="text-center  mb-4 ">
+                                <a class="small" href="login.php">Already have an account? Login!</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+ 
+
+    <!-- Bootstrap core JavaScript-->
+    <!-- <script src="vendor/jquery/jquery.min.js"></script> -->
+    <!-- <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script> -->
+
+    <!-- Core plugin JavaScript-->
+    <!-- <script src="vendor/jquery-easing/jquery.easing.min.js"></script> -->
+
+    <!-- Custom scripts for all pages-->
+    <!-- <script src="js/sb-admin-2.min.js"></script> -->
+
+</body>
+
+</html>
