@@ -4,28 +4,23 @@ $db_connection = connect_to_database(); // Check connection
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["edit_id"])) {
     $edit_id = $_POST["edit_id"];
-    $sql = "SELECT * FROM user WHERE ID = $edit_id";
+    $sql = "SELECT * FROM activity WHERE activity_id = $edit_id";
     $result = $db_connection->query($sql);
 
     if ($result->num_rows === 1) {
         $row = $result->fetch_assoc();
         // Retrieve values for the form fields
-        $first_name = $row["First_name"];
-        $last_name = $row["Last_name"];
-        $age = $row["Age"];
-        $nickname = $row["Nick_name"];
-        $email = $row["Email"];
-        $address = $row["Address"];
-        $gender = $row["Gender"];
-        $password = $row["Password"];
-        $role = $row["Role"];
-        $status = $row["Status"];
+        $activity_name = $row['activity_name'];
+        $activity_time = $row['activity_time'];
+        $activity_date = $row['activity_date'];
+        $activity_location = $row['activity_location'];
+        $activity_ootd = $row['activity_ootd'];
     }
 }
 $db_connection->close();
 ?>
 
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -35,17 +30,18 @@ $db_connection->close();
     <link rel="stylesheet" href="../css/register.css">
     <title>Edit Record</title>
     <style>
-
+        /* Add your custom CSS styles here */
         .container {
             margin-top: 20px;
         }
 
+        /* Center the form horizontally */
         .col-lg-6 {
             margin: 0 auto;
             float: none;
         }
 
-
+        /* Style labels and inputs */
         label {
             font-weight: bold;
         }
@@ -68,15 +64,16 @@ $db_connection->close();
             cursor: pointer;
         }
 
+        /* Center the submit button */
         .text-center {
             text-align: center;
         }
     </style>
 </head>
 
-<body> 
+<body>
 
-     <div class="container">
+    <div class="container">
         <div class="row justify-content-center">
             <div class="col-lg-6">
                 <div class="card o-hidden border-0 shadow-lg my-5">
@@ -86,49 +83,33 @@ $db_connection->close();
                                 <h1 class="h4 text-gray-900 mb-4">Welcome Back!</h1>
                             </div>
 
-                            <form action="../tables.php" method="post">
-                                <input type="hidden" name="id" value="<?php echo $edit_id; ?>">
+                            <form action="../show_activity.php" method="post">
+                                <input type="hidden" name="activity_id" value="<?php echo $edit_id; ?>">
 
                                 <div class="form-group">
-                                    <label for="Name">First Name:</label>
-                                    <input type="text" name="new_first_name" value="<?php echo $first_name; ?>" disabled>
+                                    <label for="Name">activity_name:</label>
+                                    <input type="text" name="activity_name" value="<?php echo $activity_name; ?>">
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="Date">Last Name:</label>
-                                    <input type="text" name="new_last_name" value="<?php echo $last_name; ?>" disabled>
+                                    <label for="Date">activity_date:</label>
+                                    <input type="text" name="activity_date" value="<?php echo $activity_date; ?>">
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="Age">Age:</label>
-                                    <input type="text" name="new_age" value="<?php echo $age; ?>" disabled>
+                                    <label for="Age">activity_time:</label>
+                                    <input type="text" name="activity_time" value="<?php echo $activity_time; ?>">
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="Nickname">Nickname:</label>
-                                    <input type="text" name="new_nickname" value="<?php echo $nickname; ?>" disabled>
+                                    <label for="Nickname">activity_location:</label>
+                                    <input type="text" name="activity_location" value="<?php echo $activity_location; ?>">
                                 </div>
 
 
-                                <label for="Meridiem">Email:</label>
-                                <input type="text" name="new_email" value="<?php echo $email; ?>" disabled><br>
+                                <label for="Meridiem">activity_ootd:</label>
+                                <input type="text" name="activity_ootd" value="<?php echo $activity_ootd; ?>"><br>
 
-                                <label for="Location">Address:</label>
-                                <input type="text" name="new_address" value="<?php echo $address; ?>" disabled><br>
-
-                                <label for="Ootd">Password:</label>
-                                <input type="text" name="new_password" value="<?php echo $password; ?>" disabled><br>
-
-                                <label for="Ootd">Role:</label>
-                                <select name="new_role">
-                                    <option value="User">User</option>
-                                    <option value="Admin">Admin</option>
-                                </select><br>
-
-
-
-                                <label for="Ootd">Status:</label>
-                                <input type="text" name="new_status" value="<?php echo $status; ?>"><br>
 
                                 <input type="submit" name="Update" value="Update">
                             </form>

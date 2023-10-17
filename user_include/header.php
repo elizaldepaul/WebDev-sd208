@@ -4,22 +4,34 @@ users();
 $db_connection = connect_to_database();
 
 
-$id = $_SESSION['ID'];
+$user_id = $_SESSION['ID'];
+
 // Assuming you have a query to fetch the username
-$sql = "SELECT * FROM user WHERE ID = '$id'"; // Replace with your actual query
+$sql = "SELECT * FROM user WHERE ID = '$user_id'"; // Replace with your actual query
 $result = mysqli_query($db_connection, $sql);
 
 if ($result->num_rows === 1) {
     $row = $result->fetch_assoc();
-    $nickname = $_row['Nick_name'];
+    $nickname = $row['Nick_name'];
     $firstname = $row['First_name'];
     $lastname = $row['Last_name'];
 } else {
-   
+
     $username = 'Default Username';
 }
-// Close the database connection
-mysqli_close($db_connection);
+
+$announcement = "SELECT COUNT(*) as total_announcement FROM announcement";
+$announcement_result = mysqli_query($db_connection, $announcement);
+
+
+if ($announcement_result) {
+    $row = mysqli_fetch_assoc($announcement_result);
+    $announcement_total = $row['total_announcement'];
+} else {
+    $announcement_total = 0;
+}
+
+
 ?>
 
 
@@ -35,6 +47,12 @@ mysqli_close($db_connection);
     <meta name="author" content="">
 
     <title>User</title>
+<!-- for #edit_data_Modal -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" /> -->
+    <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script> -->
+
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
 
     <!-- Custom fonts for this template-->
@@ -63,18 +81,20 @@ mysqli_close($db_connection);
                 <div class="sidebar-brand-icon ">
                     <img src="img/user.png" alt="" width="50px" height="50px">
                 </div>
-                <div class="sidebar-brand-text mx-3"><?php echo $nickname; ?></div>
+                <div class="sidebar-brand-text mx-3">
+                    <?php echo $nickname; ?>
+                </div>
             </a>
 
             <!-- Divider -->
             <hr class="sidebar-divider my-0">
 
             <!-- Nav Item - Dashboard -->
-            <li class="nav-item active">
+            <!-- <li class="nav-item active">
                 <a class="nav-link" href="user.php">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Your Dashboard</span></a>
-            </li>
+            </li> -->
 
             <!-- Divider -->
             <hr class="sidebar-divider">
@@ -84,39 +104,34 @@ mysqli_close($db_connection);
                 MANAGE YOUR ACTIVITIES
             </div>
 
-         
+
             <!-- Nav Item - Charts -->
             <li class="nav-item">
-                <a class="nav-link" href="charts.html">
+                <a class="nav-link" href="done_activity.php">
                     <!-- <i class="fas fa-fw fa-chart-area"></i> -->
                     <i class="fa-solid fa-calendar-plus" style="color: #7082a8;"></i>
-                    <span>Add Activities</span></a>
+                    <span>Done Activities</span></a>
             </li>
+
 
             <!-- Nav Item - Tables -->
             <li class="nav-item">
-                <a class="nav-link" href="tables.html">
+                <a class="nav-link" href="cancel_activity.php">
                     <i class="fas fa-fw fa-table"></i>
-                    <span>Edit Your Activities</span></a>
+                    <span>Cancelled Activities</span></a>
             </li>
-     <!-- Nav Item - Tables -->
+            <!-- Nav Item - Tables -->
             <li class="nav-item">
-                <a class="nav-link" href="tables.html">
+                <a class="nav-link" href="activity.php">
                     <i class="fas fa-fw fa-table"></i>
                     <span>Your Activities</span></a>
             </li>
-                 <!-- Nav Item - Tables -->
-            <li class="nav-item">
-                <a class="nav-link" href="tables.html">
-                    <i class="fas fa-fw fa-table"></i>
-                    <span>Set Your Activities</span></a>
-            </li>
-                  <!-- Nav Item - Tables -->
-            <li class="nav-item">
+            <!-- Nav Item - Tables -->
+            <!-- <li class="nav-item">
                 <a class="nav-link" href="tables.html">
                     <i class="fas fa-fw fa-table"></i>
                     <span>Others</span></a>
-            </li>
+            </li> -->
             <!-- Divider -->
             <hr class="sidebar-divider d-none d-md-block">
 
@@ -126,7 +141,7 @@ mysqli_close($db_connection);
             </div>
 
             <!-- Sidebar Message -->
-           
+
 
         </ul>
         <!-- End of Sidebar -->
@@ -146,7 +161,7 @@ mysqli_close($db_connection);
                     </button>
 
                     <!-- Topbar Search -->
-                    <form
+                    <!-- <form
                         class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
                         <div class="input-group">
                             <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."
@@ -157,7 +172,7 @@ mysqli_close($db_connection);
                                 </button>
                             </div>
                         </div>
-                    </form>
+                    </form> -->
 
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
@@ -192,7 +207,7 @@ mysqli_close($db_connection);
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="fas fa-bell fa-fw"></i>
                                 <!-- Counter - Alerts -->
-                                <span class="badge badge-danger badge-counter">3+</span>
+                                <span class="badge badge-danger badge-counter"><?php   echo $announcement_total;   ?></span>
                             </a>
                             <!-- Dropdown - Alerts -->
                             <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
@@ -306,7 +321,9 @@ mysqli_close($db_connection);
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 small"><?php echo $firstname. " ".$lastname;   ?></span>
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">
+                                    <?php echo $firstname . " " . $lastname; ?>
+                                </span>
                                 <img class="img-profile rounded-circle" src="img/undraw_profile.svg">
                             </a>
                             <!-- Dropdown - User Information -->
@@ -336,4 +353,4 @@ mysqli_close($db_connection);
 
                 </nav>
                 <!-- End of Topbar -->
-</div>
+           

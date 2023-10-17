@@ -7,40 +7,37 @@ $password = $_POST["password"];
 
 session_start();
 $conn = connect_to_database();
-$sql = "SELECT * from User where Email = '" . $email . "' and Password = '" . $password . "'";
-$result = $conn->query($sql);
-$row = $result->fetch_assoc();
 
+// Use prepared statements to prevent SQL injection
+$stmt = $conn->prepare("SELECT * FROM User WHERE Email = ? AND Password = ?");
+$stmt->bind_param("ss", $email, $password);
+$stmt->execute();
+$result = $stmt->get_result();
 
-if($email == null || $password == null){
-    header('Location: ../login.php');
-}
-else{
-    if ($row["Email"] == $email && $row["Password"] == $password) {
-        if ($row["Status"] == "Active"){
+if ($result->num_rows == 1) {
+    $row = $result->fetch_assoc();
 
+    if ($row["Status"] == "Active") {
         if ($row["Role"] == "Admin") {
             header("Location: ../admin.php");
-        } 
-        else
-         {
+        } else {
+
+            
             header("Location: ../user.php");
         }
-    }
-    else {
-        echo "<script> alert ('No Active Account Found'); </script>";
-        echo "<script> alert ('Please Register To Proceed'); </script>";
-        echo "<script>window.location.href = '../register.html'; </script>";
-    }
+        $_SESSION['Email'] = $row['Email'];
         $_SESSION["ID"] = $row["ID"];
         $_SESSION["Role"] = $row["Role"];
-    
     } else {
-        header("Location: ../login.php");
+        echo "<script>alert('No Active Account Found');</script>";
+        echo "<script>window.location.href = '../Arsha/index.php';</script>";
     }
-
-    
-
+} else {
+    // Handle the case where no matching user was found
+    echo "<script>alert('Invalid email or password');</script>";
+    echo "<script>window.location.href = '../Arsha/index.php';</script>";
 }
 
+$stmt->close();
+$conn->close();
 ?>
