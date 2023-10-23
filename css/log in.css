@@ -18,4 +18,6 @@
     background-position: center;
     background-size: cover;
   }
-  
+.p-5{
+  padding: 5px!important;
+}

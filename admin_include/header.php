@@ -14,11 +14,45 @@ if ($result->num_rows === 1) {
     $firstname = $row['First_name'];
     $lastname = $row['Last_name'];
 } else {
-   
+
     $username = 'Default Username';
 }
-// Close the database connection
-mysqli_close($db_connection);
+
+
+// NUMBERS OF REGISTERED USERS
+$total = "SELECT COUNT(*) as total_registered_users FROM user";
+$result = mysqli_query($db_connection, $total);
+
+
+if ($result) {
+    $row = mysqli_fetch_assoc($result);
+    $totalUsers = $row['total_registered_users'];
+} else {
+    $totalUsers = 0;
+}
+
+// NUMBER OF ACTIVE USERS
+$active_users = "SELECT COUNT(*) as active_users FROM user WHERE Status = 'Active'";
+$result = mysqli_query($db_connection, $active_users);
+
+if ($result) {
+    $row = mysqli_fetch_assoc($result);
+    $active_users = $row['active_users'];
+} else {
+    $active_users = 0;
+}
+
+$inactive_users = "SELECT COUNT(*) as Deactive_users FROM  user WHERE Status = 'Deactive'";
+$result = mysqli_query($db_connection, $inactive_users);
+
+if ($result) {
+    $row = mysqli_fetch_assoc($result);
+    $inactive_users = $row['Deactive_users'];
+} else {
+    $inactive_users = 0;
+}
+
+
 
 
 
@@ -40,6 +74,26 @@ mysqli_close($db_connection);
     <meta name="author" content="">
 
     <title>Admin 2</title>
+    <!-- Icon  -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Ajax -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+
+    <!-- Custom fonts for this template -->
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link
+        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+        rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="css/sb-admin-2.css">
+
+    <!-- Custom styles for this page -->
+    <link href="vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this page -->
+    <link href="vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 
     <!-- Custom fonts for this template-->
     <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -69,7 +123,9 @@ mysqli_close($db_connection);
                 <div class="sidebar-brand-icon ">
                     <img src="img/user-gear.png" alt="" width="50px" height="50px">
                 </div>
-                <div class="sidebar-brand-text mx-3"><?php echo $firstname; ?></div>
+                <div class="sidebar-brand-text mx-3">
+                    <?php echo $firstname; ?>
+                </div>
             </a>
 
             <!-- Divider -->
@@ -86,29 +142,16 @@ mysqli_close($db_connection);
             <hr class="sidebar-divider">
 
             <!-- Heading -->
-            <!-- Heading -->
             <div class="sidebar-heading">
-               Manage Your Users
+                Manage Your Users
             </div>
- <!-- Nav Item - Tables -->
-            <li class="nav-item">
-                <a class="nav-link" href="charts.html">
-                    <i class="fas fa-fw fa-table"></i>
-                    <span>Pie Chart Of Gender</span></a>
-            </li>
-        
-            <!-- Nav Item - Charts -->
-            <li class="nav-item">
-                <a class="nav-link" href="charts.html">
-                    <i class="fas fa-fw fa-chart-area"></i>
-                    <span>Charts</span></a>
-            </li>
 
-            <!-- Nav Item - Tables -->
+
+            <!-- Nav Item - Activity -->
             <li class="nav-item">
                 <a class="nav-link" href="tables.php">
                     <i class="fas fa-fw fa-table"></i>
-                    <span>List of Users</span></a>
+                    <span>List of Activites</span></a>
             </li>
 
             <!-- Divider -->
@@ -119,7 +162,7 @@ mysqli_close($db_connection);
                 <button class="rounded-circle border-0" id="sidebarToggle"></button>
             </div>
 
-        
+
         </ul>
         <!-- End of Sidebar -->
 
@@ -138,159 +181,10 @@ mysqli_close($db_connection);
                     </button>
 
                     <!-- Topbar Search -->
-                    <form
-                        class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
-                        <div class="input-group">
-                            <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."
-                                aria-label="Search" aria-describedby="basic-addon2">
-                            <div class="input-group-append">
-                                <button class="btn btn-primary" type="button">
-                                    <i class="fas fa-search fa-sm"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </form>
+
 
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
-
-                        <!-- Nav Item - Search Dropdown (Visible Only XS) -->
-                        <li class="nav-item dropdown no-arrow d-sm-none">
-                            <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="fas fa-search fa-fw"></i>
-                            </a>
-                            <!-- Dropdown - Messages -->
-                            <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in"
-                                aria-labelledby="searchDropdown">
-                                <form class="form-inline mr-auto w-100 navbar-search">
-                                    <div class="input-group">
-                                        <input type="text" class="form-control bg-light border-0 small"
-                                            placeholder="Search for..." aria-label="Search"
-                                            aria-describedby="basic-addon2">
-                                        <div class="input-group-append">
-                                            <button class="btn btn-primary" type="button">
-                                                <i class="fas fa-search fa-sm"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                        </li>
-
-                        <!-- Nav Item - Alerts -->
-                        <li class="nav-item dropdown no-arrow mx-1">
-                            <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="fas fa-bell fa-fw"></i>
-                                <!-- Counter - Alerts -->
-                                <span class="badge badge-danger badge-counter">3+</span>
-                            </a>
-                            <!-- Dropdown - Alerts -->
-                            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                                aria-labelledby="alertsDropdown">
-                                <h6 class="dropdown-header">
-                                    Alerts Center
-                                </h6>
-                                <a class="dropdown-item d-flex align-items-center" href="#">
-                                    <div class="mr-3">
-                                        <div class="icon-circle bg-primary">
-                                            <i class="fas fa-file-alt text-white"></i>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div class="small text-gray-500">December 12, 2019</div>
-                                        <span class="font-weight-bold">A new monthly report is ready to download!</span>
-                                    </div>
-                                </a>
-                                <a class="dropdown-item d-flex align-items-center" href="#">
-                                    <div class="mr-3">
-                                        <div class="icon-circle bg-success">
-                                            <i class="fas fa-donate text-white"></i>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div class="small text-gray-500">December 7, 2019</div>
-                                        $290.29 has been deposited into your account!
-                                    </div>
-                                </a>
-                                <a class="dropdown-item d-flex align-items-center" href="#">
-                                    <div class="mr-3">
-                                        <div class="icon-circle bg-warning">
-                                            <i class="fas fa-exclamation-triangle text-white"></i>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div class="small text-gray-500">December 2, 2019</div>
-                                        Spending Alert: We've noticed unusually high spending for your account.
-                                    </div>
-                                </a>
-                                <a class="dropdown-item text-center small text-gray-500" href="#">Show All Alerts</a>
-                            </div>
-                        </li>
-
-                        <!-- Nav Item - Messages -->
-                        <li class="nav-item dropdown no-arrow mx-1">
-                            <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="fas fa-envelope fa-fw"></i>
-                                <!-- Counter - Messages -->
-                                <span class="badge badge-danger badge-counter">7</span>
-                            </a>
-                            <!-- Dropdown - Messages -->
-                            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                                aria-labelledby="messagesDropdown">
-                                <h6 class="dropdown-header">
-                                    Message Center
-                                </h6>
-                                <a class="dropdown-item d-flex align-items-center" href="#">
-                                    <div class="dropdown-list-image mr-3">
-                                        <img class="rounded-circle" src="img/undraw_profile_1.svg" alt="...">
-                                        <div class="status-indicator bg-success"></div>
-                                    </div>
-                                    <div class="font-weight-bold">
-                                        <div class="text-truncate">Hi there! I am wondering if you can help me with a
-                                            problem I've been having.</div>
-                                        <div class="small text-gray-500">Emily Fowler · 58m</div>
-                                    </div>
-                                </a>
-                                <a class="dropdown-item d-flex align-items-center" href="#">
-                                    <div class="dropdown-list-image mr-3">
-                                        <img class="rounded-circle" src="img/undraw_profile_2.svg" alt="...">
-                                        <div class="status-indicator"></div>
-                                    </div>
-                                    <div>
-                                        <div class="text-truncate">I have the photos that you ordered last month, how
-                                            would you like them sent to you?</div>
-                                        <div class="small text-gray-500">Jae Chun · 1d</div>
-                                    </div>
-                                </a>
-                                <a class="dropdown-item d-flex align-items-center" href="#">
-                                    <div class="dropdown-list-image mr-3">
-                                        <img class="rounded-circle" src="img/undraw_profile_3.svg" alt="...">
-                                        <div class="status-indicator bg-warning"></div>
-                                    </div>
-                                    <div>
-                                        <div class="text-truncate">Last month's report looks great, I am very happy with
-                                            the progress so far, keep up the good work!</div>
-                                        <div class="small text-gray-500">Morgan Alvarez · 2d</div>
-                                    </div>
-                                </a>
-                                <a class="dropdown-item d-flex align-items-center" href="#">
-                                    <div class="dropdown-list-image mr-3">
-                                        <img class="rounded-circle" src="https://source.unsplash.com/Mv9hjnEUHR4/60x60"
-                                            alt="...">
-                                        <div class="status-indicator bg-success"></div>
-                                    </div>
-                                    <div>
-                                        <div class="text-truncate">Am I a good boy? The reason I ask is because someone
-                                            told me that people say this to all dogs, even if they aren't good...</div>
-                                        <div class="small text-gray-500">Chicken the Dog · 2w</div>
-                                    </div>
-                                </a>
-                                <a class="dropdown-item text-center small text-gray-500" href="#">Read More Messages</a>
-                            </div>
-                        </li>
 
                         <div class="topbar-divider d-none d-sm-block"></div>
 
@@ -298,7 +192,9 @@ mysqli_close($db_connection);
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 small"><?php echo $firstname. " ".$lastname;   ?></span>
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">
+                                    <?php echo $firstname . " " . $lastname; ?>
+                                </span>
                                 <img class="img-profile rounded-circle" src="img/undraw_profile.svg">
                             </a>
                             <!-- Dropdown - User Information -->
@@ -317,7 +213,8 @@ mysqli_close($db_connection);
                                     Activity Log
                                 </a>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" data-toggle="modal" data-target="#logoutModal" href="../php/logout.php" style="cursor: pointer;">
+                                <a class="dropdown-item" data-toggle="modal" data-target="#logoutModal"
+                                    href="../php/logout.php" style="cursor: pointer;">
                                     <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Logout
                                 </a>
@@ -327,5 +224,260 @@ mysqli_close($db_connection);
                     </ul>
 
                 </nav>
+                <div class="container-fluid">
+
+                    <!-- Content Row -->
+                    <div class="row">
+
+                        <!-- Earnings (Monthly) Card Example -->
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-primary shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                Number Of Registered Users</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                                <?php echo $totalUsers; ?>
+                                            </div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-users" style="color: #6888e4;"></i>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Active User -->
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-success shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                                Active Users</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                                <?php echo $active_users; ?>
+                                            </div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fa-solid fa-user-check" style="color:#1cc88a;"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Inactive User -->
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-info shadow h-100 py-2"
+                                style="border-left: 0.25rem solid red !important;">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1"
+                                                style="color: red !important;">deactived users
+                                            </div>
+                                            <div class="row no-gutters align-items-center">
+                                                <div class="col-auto">
+                                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">
+                                                        <?php echo $inactive_users; ?>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-auto">
+                                           <i class="fa-solid fa-user-xmark" style="color:#ff0000;"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-info shadow h-100 py-2"
+                                style="border-left: 0.25rem solid black !important;">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1"
+                                                style="color: black !important;">Add Announcements
+                                            </div>
+                                            <div class="row no-gutters align-items-center">
+                                                <div class="col-auto">
+                                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">
+                                                        <input class="btn btn-primary" id="add_btn" type="submit"
+                                                            name="Update" value="Add" onclick="openModal()"
+                                                            style="background-color:black; border:none;">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fa-solid fa-bullhorn" style="color:black;"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- =============  annoucement  ================ -->
+                        <style>
+                            /* Modal Styles */
+                            .modal {
+                                display: none;
+                                position: fixed;
+                                top: 0;
+                                left: 0;
+                                width: 100%;
+                                height: 100%;
+                                overflow: auto;
+                                background-color: rgba(0, 0, 0, 0.7);
+                                /* z-index: 1; */
+                                justify-content: center;
+                                align-items: center;
+                            }
+
+                            .modal-content {
+                                background-color: #fff;
+                                padding: 20px;
+                                border-radius: 5px;
+
+                            }
+
+                            /* Close Button Styles */
+                            .close {
+                                position: absolute;
+                                top: 10px;
+                                right: 10px;
+                                cursor: pointer;
+                            }
+
+                            /* Add your custom CSS styles here */
+                            .container {
+                                margin-top: 20px;
+                            }
+
+                            /* Center the form horizontally */
+                            .col-lg-6 {
+                                margin: 0 auto;
+                                float: none;
+                            }
+
+                            /* Style labels and inputs */
+                            label {
+                                font-weight: bold;
+                            }
+
+                            input[type="date"],
+                            [type="time"],
+                            [type="text"],
+                            select {
+                                width: 100%;
+                                padding: 10px;
+                                margin-bottom: 10px;
+                                border: 1px solid #ccc;
+                                border-radius: 5px;
+                            }
+
+                            input[type="submit"] {
+                                background-color: #007bff;
+                                color: #fff;
+                                padding: 10px 20px;
+                                border: none;
+                                border-radius: 5px;
+                                cursor: pointer;
+                            }
+
+                            /* Center the submit button */
+                            .text-center {
+                                text-align: center;
+                            }
+
+                            #wrapper #content-wrapper {
+                                height: 900px;
+                                overflow: auto;
+                            }
+                        </style>
+                        <div id="myModal" class="modal">
+                            <div class="container">
+                                <div class="row justify-content-center">
+                                    <div class="col-lg-6">
+                                        <div class="card o-hidden border-0 shadow-lg my-5">
+                                            <div class="card-body p-0">
+                                                <div class="p-5">
+                                                    <div class="text-center">
+                                                        <h1 class="h4 text-gray-900 mt-4">Add Announcements</h1>
+                                                        <span class="close" onclick="closeModal()">&times;</span>
+                                                    </div>
+                                                    <div class="modal-content">
+
+                                                        <form action="php/announcement.php" method="post"
+                                                            autocomplete="off" enctype="multipart/form-data">
+
+                                                            <div class="form-group">
+                                                                <label for="Name">Announcements:</label>
+                                                                <textarea style="height: 300px;" type="text"
+                                                                    name="announcement" value=""></textarea>
+                                                            </div>
 
 
+                                                            <div class="text-center">
+                                                                <input type="submit" name="Update" value="Post">
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <script>
+                            // Function to open the modal
+                            function openModal() {
+                                var modal = document.getElementById("myModal");
+                                modal.style.display = "block";
+                            }
+
+                            // Function to close the modal
+                            function closeModal() {
+                                var modal = document.getElementById("myModal");
+                                modal.style.display = "none";
+                            }
+                            function openModalEdit() {
+                                var modal = document.getElementById("myModalEdit");
+                                modal.style.display = "block";
+                            }
+
+                            // Function to close the modal
+                            function closeModalEdit() {
+                                var modal = document.getElementById("myModalEdit");
+                                modal.style.display = "none";
+                            }
+
+                            // Close the modal if the user clicks outside of it
+                            // window.onclick = function (event) {
+                            //     var modal = document.getElementById("myModal");
+                            //     if (event.target === modal) {
+                            //         modal.style.display = "none";
+                            //     }
+                            // }
+                        </script>
+                        <!-- end announcments -->
+
+                    </div>
+
+                    <!-- Content Row -->
+
+
+
+                    <!-- Area Chart -->
+
+                   
+
+            
+            <!-- Add this section for the Monthly Activity Count chart -->
+        
