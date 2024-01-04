@@ -197,22 +197,6 @@ include_once('header.php');
 
         return true;
     }
-
-
-
-    // Function to show the registration modal with animation
-    function showRegistration() {
-        $('#registrationModal').addClass('fade');
-        $('#registrationModal').modal('show');
-        $('#loginModal').modal('hide');
-    }
-
-    // Function to show the login modal with animation
-    function showLogin() {
-        $('#loginModal').addClass('fade');
-        $('#loginModal').modal('show');
-        $('#registrationModal').modal('hide');
-    }
 </script>
 </div>
 
